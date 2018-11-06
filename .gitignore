@@ -1,3 +1,6 @@
+### Project Files ###
+datasets/*
+
 ### Python ###
 *.pyc
 
