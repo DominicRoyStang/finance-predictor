@@ -1,0 +1,17 @@
+[[source]]
+verify_ssl = true
+name = "pypi"
+url = "https://pypi.org/simple"
+
+[requires]
+python_version = "3.7"
+
+[packages]
+matplotlib = "*"
+numpy = "*"
+sklearn = "*"
+pandas = "*"
+
+[dev-packages]
+"pep8" = "*"
+"autopep8" = "*"

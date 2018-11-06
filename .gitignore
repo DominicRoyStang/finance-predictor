@@ -1,2 +1,13 @@
-# Add any directories, files, or patterns you don't want to be tracked by version control
+### Python ###
 *.pyc
+
+### VisualStudioCode ###
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+### VisualStudioCode Patch ###
+# Ignore all local history of files
+.history
