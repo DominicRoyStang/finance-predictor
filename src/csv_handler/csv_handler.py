@@ -10,7 +10,8 @@ def determine_format(csv_file):
     Raises exception if the format is unrecognized
     """
     # Get list of supported csv formats
-    with open('csv_formats.yaml') as formats:
+    formats_file = Path(__file__).resolve().parent/"csv_formats.yaml"
+    with open(formats_file) as formats:
         csv_formats = yaml.load(formats)
 
     # The first row of a csv contains the labels
@@ -80,8 +81,7 @@ def handle_mint(csv_file):
 
     # Remove features that are no longer needed
     data.drop(["Amount", "Transaction Type"], axis=1, inplace=True)
-    print(data.columns.tolist())
-    print(data.values)
+
     return data
 
 
@@ -105,8 +105,3 @@ def format_dataset(csv_file):
         return handle_mint(csv_file)
     else:
         raise Exception('CSV format unrecognized!')
-
-
-datasets_directory = Path.cwd()/"../../datasets"
-transactions_file = datasets_directory/"test_preformatted.csv"
-dataframe = format_dataset(transactions_file)
