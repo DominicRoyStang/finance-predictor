@@ -39,8 +39,7 @@ def handle_preformatted(csv_file):
     data['Date'] = pandas.to_datetime(data.Date)
     data.sort_values(by='Date', inplace=True)
 
-    # Create and initialize index column
-    data.insert(1, 'Index', range(1, len(data)+1))
+    # Initialize index column
     data.set_index('Index', inplace=True)
     return data
 
@@ -83,6 +82,7 @@ def handle_mint(csv_file):
     data.drop(["Amount", "Transaction Type"], axis=1, inplace=True)
     print(data.columns.tolist())
     print(data.values)
+    return data
 
 
 def format_dataset(csv_file):
@@ -108,6 +108,5 @@ def format_dataset(csv_file):
 
 
 datasets_directory = Path.cwd()/"../../datasets"
-# transactions_file = datasets_directory/"transactions.csv"
 transactions_file = datasets_directory/"test_preformatted.csv"
-format_dataset(transactions_file)
+dataframe = format_dataset(transactions_file)
