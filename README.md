@@ -3,6 +3,9 @@
 + Pipenv
     + `pip3 install --user pipenv`
 
+# First time set up
+from the root of the project, run `pipenv install`.
+
 # How to run the code
 1. Download your transactions from Mint
 2. Move the transactions.csv file to a `datasets/` folder under the root of the project  
