@@ -37,10 +37,14 @@ def handle_preformatted(csv_file):
     print('preformatted format dected')
 
     # Load from dataset
-    data = pandas.read_csv(csv_file, infer_datetime_format=True)
+    data = pandas.read_csv(csv_file)
 
-    # Sort by date
+    # Set date format and sort by date
+    data['Date'] = pandas.to_datetime(data.Date)
     data.sort_values(by='Date', inplace=True)
+
+    print(data['Net Worth'].dtype)
+    print(data.Date.values.dtype)
 
     return data
 
