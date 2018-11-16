@@ -1,10 +1,11 @@
 import numpy
 import pandas
+from pathlib import Path
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
-from pathlib import Path
+from sklearn.metrics import mean_squared_error, r2_score
 from feature_engineering import csv_handler
-from graphing.graphing import plot_data
+from graphing.graphing import plot_data, plot_prediction
 
 
 project_root = Path(__file__).resolve().parent.parent
@@ -39,54 +40,43 @@ def run_linear_regression():
     X = X.reshape(len(X), 1)
 
     # Plot all data
-    plot_data(X, y, timeout=3000)
+    plot_data(X, y, timeout=None)
 
     # Split the data into training/testing sets
     X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=1, shuffle=False)
+    X_numeric = [pandas.to_numeric(example) for example in X]
+    X_train_numeric = [pandas.to_numeric(example) for example in X_train]
+    X_test_numeric = [pandas.to_numeric(example) for example in X_test]
 
     # Create linear regression object
     regression = LinearRegression()
-    print(len(X_train))
-    print(len(y_train))
 
     # Train the model using the training sets
-    regression.fit(X_train, y_train)
+    regression.fit(X_train_numeric, y_train)
 
     # Make predictions using the testing set
-    y_pred = regression.predict(X_test)
+    y_pred = regression.predict(X_test_numeric)
+    # y_pred = regression.predict(X_numeric)
+
+    # Graph
+    plot_prediction(X_test, y_test, y_pred=y_pred, timeout=None)
+    # plot_prediction(X, y, y_pred=y_pred, timeout=None)
+
+    # The coefficients
+    print('Coefficients: \n', regression.coef_)
+    # The mean squared error
+    print("Mean squared error: %.2f" % mean_squared_error(y_test, y_pred))
+    # Explained variance score: 1 is perfect prediction
+    print('Variance score: %.2f' % r2_score(y_test, y_pred))
 
 
 def main():
     # Load the personal finance dataset
     transactions_file = project_root/"datasets/transactions.csv"
     X = csv_handler.format_dataset(transactions_file)
-    y = X.pop("Net Worth").values
-    X = X.pop("Date").values
-    X = X.reshape(-1, 1)
-    y = y.reshape(-1, 1)
 
-    # Split the data into training/testing sets
-    X_train = X[:-50]
-    X_test = X[-50:]
-
-    # Split the targets into training/testing sets
-    y_train = y[:-50]
-    y_test = y[-50:]
-
-    # Plot outputs
-    plt.scatter(X_train, y_train,  color='black')
-    plt.xticks(())
-    plt.yticks(())
-    plt.show()
-
-    # Create linear regression object
-    regr = LinearRegression()
-
-    # Train the model using the training sets
-    regr.fit(X_train, y_train)
-
-    # Make predictions using the testing set
-    # y_pred = regr.predict(X_test)
+    # Linear Regression
+    run_linear_regression()
 
     # The coefficients
     # print('Coefficients: \n', regr.coef_)
@@ -97,4 +87,4 @@ def main():
 
 
 if __name__ == "__main__":
-    run_linear_regression()
+    main()

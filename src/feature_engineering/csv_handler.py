@@ -34,7 +34,7 @@ def handle_preformatted(csv_file):
     Converts csv file in preformatted format to a dataframe
     Returns the csv as a Pandas DataFrame
     """
-    print('preformatted format dected')
+    print('preformatted format detected')
 
     # Load from dataset
     data = pandas.read_csv(csv_file)
@@ -42,9 +42,6 @@ def handle_preformatted(csv_file):
     # Set date format and sort by date
     data['Date'] = pandas.to_datetime(data.Date)
     data.sort_values(by='Date', inplace=True)
-
-    print(data['Net Worth'].dtype)
-    print(data.Date.values.dtype)
 
     return data
 
@@ -54,7 +51,7 @@ def handle_indexed_preformatted(csv_file):
     Converts csv file in preformatted format to a dataframe
     Returns the csv as a Pandas DataFrame
     """
-    print('indexed_preformatted format dected')
+    print('indexed_preformatted format detected')
 
     # Load from dataset
     data = pandas.read_csv(csv_file)
@@ -76,7 +73,7 @@ def handle_mint(csv_file):
         1. Has two columns: date, net worth
         2. Is sorted by date (YYYY-MM-DD)
     """
-    print('mint format dected')
+    print('mint format detected')
 
     # Load relevant data from dataset
     relevant_features = ['Date', 'Transaction Type', 'Amount']
