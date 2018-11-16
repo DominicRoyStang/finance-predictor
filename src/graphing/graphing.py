@@ -33,4 +33,5 @@ def plot_data(x, y, timeout=None):
 
 
 def close_event():
-    plt.close()  # timer calls this function after 3 seconds and closes the window
+    """Timer calls this lambda function"""
+    plt.close()  # Closes the window
