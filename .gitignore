@@ -1,6 +1,7 @@
 ### Project Files ###
 datasets/*
-!test_preformatted.csv
+!preformatted.csv
+!indexed_preformatted.csv
 
 ### Python ###
 *.pyc

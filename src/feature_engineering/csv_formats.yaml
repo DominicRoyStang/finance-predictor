@@ -9,7 +9,14 @@ mint:
   - Account Name
   - Labels
   - Notes
+
+# Preformatted file format
 preformatted:
+  - Date
+  - Net Worth
+
+# Indexed preformatted file format
+indexed_preformatted:
   - Index
   - Date
   - Net Worth

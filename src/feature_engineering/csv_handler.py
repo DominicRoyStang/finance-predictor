@@ -21,6 +21,8 @@ def determine_format(csv_file):
     # Search for a corresponding supported format
     if current_format == csv_formats['preformatted']:
         return 'preformatted'
+    if current_format == csv_formats['indexed_preformatted']:
+        return 'indexed_preformatted'
     if current_format == csv_formats['mint']:
         return 'mint'
     else:
@@ -32,7 +34,24 @@ def handle_preformatted(csv_file):
     Converts csv file in preformatted format to a dataframe
     Returns the csv as a Pandas DataFrame
     """
-    print('preformatted')
+    print('preformatted format dected')
+
+    # Load from dataset
+    data = pandas.read_csv(csv_file, infer_datetime_format=True)
+
+    # Sort by date
+    data.sort_values(by='Date', inplace=True)
+
+    return data
+
+
+def handle_indexed_preformatted(csv_file):
+    """
+    Converts csv file in preformatted format to a dataframe
+    Returns the csv as a Pandas DataFrame
+    """
+    print('indexed_preformatted format dected')
+
     # Load from dataset
     data = pandas.read_csv(csv_file)
 
@@ -42,6 +61,7 @@ def handle_preformatted(csv_file):
 
     # Initialize index column
     data.set_index('Index', inplace=True)
+
     return data
 
 
@@ -52,6 +72,8 @@ def handle_mint(csv_file):
         1. Has two columns: date, net worth
         2. Is sorted by date (YYYY-MM-DD)
     """
+    print('mint format dected')
+
     # Load relevant data from dataset
     relevant_features = ['Date', 'Transaction Type', 'Amount']
     data = pandas.read_csv(csv_file, usecols=relevant_features)
@@ -101,6 +123,8 @@ def format_dataset(csv_file):
     # Handle the format
     if csv_format is 'preformatted':
         return handle_preformatted(csv_file)
+    elif csv_format is 'indexed_preformatted':
+        return handle_indexed_preformatted(csv_file)
     elif csv_format is 'mint':
         return handle_mint(csv_file)
     else:
