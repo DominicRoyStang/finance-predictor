@@ -20,7 +20,7 @@ def test_csv_handler():
     y = data["Date"]
     X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=1, shuffle=False)
     # Plot outputs
-    plot_data(X_train, y_train, timeout=2000)
+    plot_data(X_train, y_train, timeout=3000)
 
 
 def main():

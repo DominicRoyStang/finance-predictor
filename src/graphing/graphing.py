@@ -1,5 +1,4 @@
 import matplotlib.pyplot as plt
-import matplotlib.dates
 import numpy
 
 
@@ -21,9 +20,8 @@ def plot_data(x, y, timeout=None):
     # Set the number of ticks on the x-axis
     xmin, xmax = ax.get_xlim()
     ax.set_xticks(numpy.linspace(xmin, xmax, 9))
-    # Change label angles
-    for label in ax.xaxis.get_ticklabels():
-        label.set_rotation(45)
+    # Format x-axis label angles
+    fig.autofmt_xdate()
     # Raise the bottom of the figure to make space for the angled labels
     plt.subplots_adjust(bottom=0.23)
     # Show data
