@@ -66,24 +66,19 @@ def run_linear_regression():
     print('Coefficients: \n', regression.coef_)
     # The mean squared error
     print("Mean squared error: %.2f" % mean_squared_error(y_test, y_pred))
+    # Root mean squared error
+    print("Root mean square error: %.2f" % numpy.sqrt(mean_squared_error(y_test, y_pred)))
     # Explained variance score: 1 is perfect prediction
     print('Variance score: %.2f' % r2_score(y_test, y_pred))
 
 
 def main():
     # Load the personal finance dataset
-    transactions_file = project_root/"datasets/transactions.csv"
-    X = csv_handler.format_dataset(transactions_file)
+    # transactions_file = project_root/"datasets/transactions.csv"
+    # X = csv_handler.format_dataset(transactions_file)
 
     # Linear Regression
     run_linear_regression()
-
-    # The coefficients
-    # print('Coefficients: \n', regr.coef_)
-    # The mean squared error
-    # print("Mean squared error: %.2f" % mean_squared_error(y_test, y_pred))
-    # Explained variance score: 1 is perfect prediction
-    # print('Variance score: %.2f' % r2_score(y_test, y_pred))
 
 
 if __name__ == "__main__":
