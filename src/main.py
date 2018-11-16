@@ -1,6 +1,6 @@
 import numpy
 import pandas
-from sklearn import linear_model
+from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from pathlib import Path
 from feature_engineering import csv_handler
@@ -14,13 +14,46 @@ def test_csv_handler():
     # Load the personal finance dataset
     transactions_file = project_root/"datasets/preformatted.csv"
     data = csv_handler.format_dataset(transactions_file)
-    print(data.shape)
-    print(data.head())
-    X = data["Net Worth"]
-    y = data["Date"]
+
+    # Split into feature and target sets
+    X = data["Date"]
+    y = data["Net Worth"]
+
+    # Split the data into training/testing sets
     X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=1, shuffle=False)
+
     # Plot outputs
     plot_data(X_train, y_train, timeout=3000)
+
+
+def run_linear_regression():
+    # Load the personal finance dataset
+    transactions_file = project_root/"datasets/preformatted.csv"
+    data = csv_handler.format_dataset(transactions_file)
+
+    # Split into feature and target sets
+    X = data["Date"].values
+    y = data["Net Worth"]
+
+    # Convert 1-D array to 2-D feature array, as expected by sklearn
+    X = X.reshape(len(X), 1)
+
+    # Plot all data
+    plot_data(X, y, timeout=3000)
+
+    # Split the data into training/testing sets
+    X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=1, shuffle=False)
+
+    # Create linear regression object
+    regression = LinearRegression()
+    print(len(X_train))
+    print(len(y_train))
+
+    # Train the model using the training sets
+    regression.fit(X_train, y_train)
+
+    # Make predictions using the testing set
+    y_pred = regression.predict(X_test)
 
 
 def main():
@@ -47,7 +80,7 @@ def main():
     plt.show()
 
     # Create linear regression object
-    regr = linear_model.LinearRegression()
+    regr = LinearRegression()
 
     # Train the model using the training sets
     regr.fit(X_train, y_train)
@@ -64,4 +97,4 @@ def main():
 
 
 if __name__ == "__main__":
-    test_csv_handler()
+    run_linear_regression()
