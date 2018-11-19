@@ -108,7 +108,7 @@ def handle_mint(csv_file):
     return data
 
 
-def format_dataset(csv_file):
+def csv_to_formatted_dataframe(csv_file):
     """
     Format and edit dataset from a csv file.
     Returns a Pandas DataFrame that
@@ -130,3 +130,13 @@ def format_dataset(csv_file):
         return handle_mint(csv_file)
     else:
         raise Exception('CSV format unrecognized!')
+
+
+def split_aggregate_csv(csv_file):
+    """
+    Receives a csv file with transactions from many individuals,
+    and creates a folder containing one csv file per individual.
+    Returns a pathlib Path to the created folder.
+    """
+    # TODO
+    raise NotImplementedError
