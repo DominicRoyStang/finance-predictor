@@ -1,3 +1,13 @@
+"""
+This file is intended to be used for model selection.
+It can be used to compare the following three regression models:
+    - Linear Regression (lr)
+    - Support Vector Regression (svr)
+    - Gaussian Process Regression (gpr)
+
+Author: Dominic Roy-Stang
+"""
+
 import sys
 from pathlib import Path
 
@@ -127,14 +137,22 @@ def main(args):
     results = []
 
     # Load the provided personal finance dataset
+
     if len(args) is 1:
         # Default to all *.csv files if no file is provided as an argument
         project_root = Path(__file__).resolve().parent.parent
         datasets_folder = project_root/"datasets/"
         datasets = [x for x in datasets_folder.glob("**/*.csv") if x.is_file()]
         results = process_files(datasets)
+
     elif len(args) is 2:
-        pass
+        location = Path(args[1])
+        if location.is_file():
+            results = process_files([location])
+        elif location.is_dir():
+            datasets = [x for x in location.glob("**/*") if x.is_file()]
+            results = process_files(datasets)
+
     else:
         print("Too many arguments provided!")
         exit()
