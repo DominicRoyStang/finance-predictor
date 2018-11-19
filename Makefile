@@ -4,7 +4,7 @@
 
 ## Starts the code
 start:
-	pipenv run python3 src/main.py
+	pipenv run python3 src/model_selection.py
 
 # Inspired by <http://marmelab.com/blog/2016/02/29/auto-documented-makefile.html>
 # sed script explained:

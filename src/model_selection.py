@@ -106,6 +106,10 @@ def run_gaussian_process_regression(data):
 
 
 def process_files(file_list):
+    """
+    Runs all three regressions on the files in the file_list.
+    Returns a dictionary, where each compared regression type is mapped to a list of scores (one for each file)
+    """
     score_lists = {
         'lr': [],
         'svr': [],
