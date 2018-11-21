@@ -20,3 +20,16 @@ indexed_preformatted:
   - Index
   - Date
   - Net Worth
+
+# Czech file format
+czech:
+  - trans_id
+  - account_id
+  - date
+  - type
+  - operation
+  - amount
+  - balance
+  - k_symbol
+  - bank
+  - account
