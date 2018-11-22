@@ -118,7 +118,11 @@ def process_files(file_list):
     # NOTE: This could be much faster with parallel processing on large file lists
     for file in file_list:
         # Create a dataframe from the current file
-        dataframe = csv_to_formatted_dataframe(file)
+        try:
+            dataframe = csv_to_formatted_dataframe(file)
+        except Exception as err:
+            print(str(err), "Skipping file.")
+            continue
         # Run regressions on the dataframe
         lr_score = run_linear_regression(dataframe)
         svr_score = run_support_vector_regression(dataframe)
@@ -144,6 +148,7 @@ def main(args):
 
     if len(args) is 1:
         # Default to all *.csv files if no file is provided as an argument
+        # Might change default to just preformatted.csv
         project_root = Path(__file__).resolve().parent.parent
         datasets_folder = project_root/"datasets/"
         datasets = [x for x in datasets_folder.glob("**/*.csv") if x.is_file()]
