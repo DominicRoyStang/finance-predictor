@@ -2,6 +2,7 @@
 datasets/*
 !preformatted.csv
 !indexed_preformatted.csv
+!trans.asc
 
 ### Python ###
 *.pyc
