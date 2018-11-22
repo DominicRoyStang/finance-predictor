@@ -14,6 +14,7 @@ from pathlib import Path
 import numpy
 import pandas
 from sklearn.linear_model import LinearRegression
+from sklearn.svm import SVR
 from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.model_selection import train_test_split
 
@@ -92,7 +93,45 @@ def run_support_vector_regression(data):
     Returns the root mean squared error on the test set.
     """
     # TODO
-    return 0
+    # Split into feature and target sets
+    X = data["Date"].values
+    y = data["Net Worth"]
+
+    # Convert 1-D array to 2-D feature array, as expected by sklearn
+    X = X.reshape(len(X), 1)
+
+    # Plot all data
+    # plot_data(X, y, timeout=None)
+
+    # Split the data into training/testing sets
+    X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=1, shuffle=False)
+    X_numeric = [pandas.to_numeric(example) for example in X]
+    X_train_numeric = [pandas.to_numeric(example) for example in X_train]
+    X_test_numeric = [pandas.to_numeric(example) for example in X_test]
+
+    # Create linear regression object
+    regression = SVR(gamma='scale')
+
+    # Train the model using the training sets
+    regression.fit(X_train_numeric, y_train)
+
+    # Make predictions using the testing set
+    y_pred = regression.predict(X_test_numeric)  # predictions on the domain of the training set
+    # y_pred = regression.predict(X_numeric)  # predictions on the domain of X
+
+    # Graph
+    # plot_prediction(X_test, y_test, y_pred=y_pred, timeout=None)  # plot on the domain of the training set
+    # plot_prediction(X, y, y_pred=y_pred, timeout=None)  # plot on the domain of X
+
+    # Root mean squared error
+    root_mean_squared_error = numpy.sqrt(mean_squared_error(y_test, y_pred))
+    print("Root mean square error: %.2f" % root_mean_squared_error)
+    # Explained variance score: 1 is perfect prediction
+    variance_score = r2_score(y_test, y_pred)
+    print("Variance score: %.2f" % variance_score)  # this is actually r squared
+    print("\n")
+
+    return variance_score
 
 
 def run_gaussian_process_regression(data):
