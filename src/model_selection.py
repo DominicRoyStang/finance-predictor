@@ -81,6 +81,7 @@ def run_linear_regression(data):
     print("Root mean square error: %.2f" % root_mean_squared_error)
     # Explained variance score: 1 is perfect prediction
     print("Variance score: %.2f" % r2_score(y_test, y_pred))
+    print("\n")
 
     return root_mean_squared_error
 
