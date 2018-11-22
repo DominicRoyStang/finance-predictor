@@ -71,19 +71,18 @@ def run_linear_regression(data):
     # y_pred = regression.predict(X_numeric)  # predictions on the domain of X
 
     # Graph
-    plot_prediction(X_test, y_test, y_pred=y_pred, timeout=None)  # plot on the domain of the training set
+    # plot_prediction(X_test, y_test, y_pred=y_pred, timeout=None)  # plot on the domain of the training set
     # plot_prediction(X, y, y_pred=y_pred, timeout=None)  # plot on the domain of X
 
-    # The mean squared error
-    print("Mean squared error: %.2f" % mean_squared_error(y_test, y_pred))
     # Root mean squared error
     root_mean_squared_error = numpy.sqrt(mean_squared_error(y_test, y_pred))
     print("Root mean square error: %.2f" % root_mean_squared_error)
     # Explained variance score: 1 is perfect prediction
-    print("Variance score: %.2f" % r2_score(y_test, y_pred))
+    variance_score = r2_score(y_test, y_pred)
+    print("Variance score: %.2f" % variance_score)  # this is actually r squared
     print("\n")
 
-    return root_mean_squared_error
+    return variance_score
 
 
 def run_support_vector_regression(data):
@@ -166,9 +165,9 @@ def main(args):
         exit()
 
     # Output results
-    print("Average score (rmse) on linear regression:", numpy.average(results["lr"]))
-    print("Average score (rmse) on support vector regression:", numpy.average(results["svr"]))
-    print("Average score (rmse) on gaussian process regression:", numpy.average(results["gpr"]))
+    print("Average score (r_sqr) on linear regression:", numpy.average(results["lr"]))
+    print("Average score (r_sqr) on support vector regression:", numpy.average(results["svr"]))
+    print("Average score (r_sqr) on gaussian process regression:", numpy.average(results["gpr"]))
 
 
 if __name__ == "__main__":
