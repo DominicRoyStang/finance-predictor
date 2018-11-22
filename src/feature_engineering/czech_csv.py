@@ -18,6 +18,8 @@ def handle_czech(csv_file):
     data['date'] = pandas.to_datetime(data.date)
     data.sort_values(by='date', inplace=True)
 
+    data['balance'] = pandas.to_numeric(data.balance)
+
     # Relabel
     data = data.rename({'date': 'Date', 'balance': 'Net Worth'}, axis='columns')
 
