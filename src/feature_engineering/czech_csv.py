@@ -12,8 +12,18 @@ def split_czech(csv_file):
     # Load from dataset
     data = pandas.read_csv(csv_file, delimiter=';', dtype='unicode')
 
-    # Set date format and sort by date
-    # data['Date'] = pandas.to_datetime(data.Date)
-    # data.sort_values(by='Date', inplace=True)
+    print('This might take several minutes. Be patient.')
 
-    return data
+    gb = data.groupby('account_id')
+    # data = [gb.get_group(x) for x in gb.groups]
+    project_root = Path(__file__).resolve().parent.parent.parent
+    output_folder = project_root/("datasets/" + str(csv_file.stem) + "_split")
+    output_folder.mkdir(parents=True, exist_ok=True)
+
+    # for each account, write its transactions to a csv file
+    for account_id in gb.groups:
+        transactions = gb.get_group(account_id)
+        output_file = output_folder/(account_id + ".csv")
+        transactions.to_csv(output_file, sep=';')
+
+    return str(output_folder)
