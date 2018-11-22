@@ -2,7 +2,7 @@ import yaml
 import pandas
 from pathlib import Path
 
-from .czech_csv import split_czech
+from .czech_csv import split_czech, handle_czech
 from .mint_csv import handle_mint
 from .preformatted_csv import handle_preformatted, handle_indexed_preformatted
 
@@ -60,6 +60,8 @@ def csv_to_formatted_dataframe(csv_file):
         return handle_indexed_preformatted(csv_file)
     elif csv_format is 'mint':
         return handle_mint(csv_file)
+    elif csv_format is 'czech':
+        return handle_czech(csv_file)
     else:
         raise Exception('CSV format unrecognized!')
 
