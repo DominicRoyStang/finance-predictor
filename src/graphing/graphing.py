@@ -60,7 +60,7 @@ def plot_prediction(x, y, y_pred=None, timeout=None):
     # Plot outputs
     plt.scatter(x, y, s=marker_sizes, color='black')
     if y_pred is not None:
-        plt.plot(x, y_pred, color='blue', linewidth=3)
+        plt.plot(x, y_pred, color='blue', linewidth=1)
 
     # Format x-axis label angles
     fig.autofmt_xdate()
