@@ -23,7 +23,7 @@ def plot_data(x, y, timeout=None):
     marker_sizes = [12 for _ in x]
 
     # Plot outputs
-    plt.scatter(x, y, s=marker_sizes, color='black')
+    plt.scatter(x, y, s=marker_sizes, color='darkorange')
 
     # Format x-axis label angles
     fig.autofmt_xdate()
@@ -37,7 +37,7 @@ def plot_data(x, y, timeout=None):
     plt.show()
 
 
-def plot_prediction(x, y, y_pred=None, timeout=None):
+def plot_prediction(x, y, X_test=None, y_pred=None, timeout=None):
     """Draws the data as a scatter plot, and the prediction as a line"""
 
     # Resize the graph window
@@ -58,9 +58,13 @@ def plot_prediction(x, y, y_pred=None, timeout=None):
     marker_sizes = [12 for _ in x]
 
     # Plot outputs
-    plt.scatter(x, y, s=marker_sizes, color='black')
+    plt.scatter(x, y, s=marker_sizes, color='darkorange')
     if y_pred is not None:
-        plt.plot(x, y_pred, color='blue', linewidth=1)
+        plt.plot(x, y_pred, color='navy', linewidth=1)
+
+    # Draw vertical line at start of test set
+    if X_test is not None:
+        plt.axvline(x=X_test[0], linestyle='dashed', color='pink')
 
     # Format x-axis label angles
     fig.autofmt_xdate()
