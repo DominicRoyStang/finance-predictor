@@ -112,18 +112,18 @@ def run_support_vector_regression(data):
     X_test_numeric = [pandas.to_numeric(example) for example in X_test]
 
     # Create linear regression object
-    regression = SVR(gamma='scale')
+    regression = SVR(gamma='scale', C=10e2)
 
     # Train the model using the training sets
     regression.fit(X_train_numeric, y_train)
 
     # Make predictions using the testing set
     y_pred = regression.predict(X_test_numeric)  # predictions on the domain of the training set
-    # y_pred = regression.predict(X_numeric)  # predictions on the domain of X
+    y_pred_all = regression.predict(X_numeric)  # predictions on the domain of X
 
     # Graph
     # plot_prediction(X_test, y_test, y_pred=y_pred, timeout=None)  # plot on the domain of the training set
-    # plot_prediction(X, y, y_pred=y_pred, timeout=None)  # plot on the domain of X
+    plot_prediction(X, y, X_test=X_test, y_pred=y_pred_all, timeout=None)  # plot on the domain of X
 
     # Root mean squared error
     root_mean_squared_error = numpy.sqrt(mean_squared_error(y_test, y_pred))
@@ -160,7 +160,7 @@ def run_gaussian_process_regression(data):
     X_test_numeric = [pandas.to_numeric(example) for example in X_test]
 
     # Create linear regression object
-    kernel = ExpSineSquared(1.0, 5.0, periodicity_bounds=(1e-2, 1e1)) + WhiteKernel(1e-1)
+    kernel = ExpSineSquared(1.0, 5.0, periodicity_bounds=(1e-2, 10e1)) + WhiteKernel(1e-1)
     regression = GaussianProcessRegressor(kernel=kernel, alpha=35)
 
     # Train the model using the training sets
@@ -168,11 +168,11 @@ def run_gaussian_process_regression(data):
 
     # Make predictions using the testing set
     y_pred = regression.predict(X_test_numeric)  # predictions on the domain of the training set
-    # y_pred = regression.predict(X_numeric)  # predictions on the domain of X
+    y_pred_all = regression.predict(X_numeric)  # predictions on the domain of X
 
     # Graph
-    # plot_prediction(X_test, y_test, y_pred=y_pred, timeout=None)  # plot on the domain of the training set
-    # plot_prediction(X, y, y_pred=y_pred, timeout=None)  # plot on the domain of X
+    # plot_prediction(X_test, y_test, X_test=X_test, y_pred=y_pred, timeout=None)  # plot on the domain of the training set
+    plot_prediction(X, y, X_test=X_test, y_pred=y_pred_all, timeout=None)  # plot on the domain of X
 
     # Root mean squared error
     root_mean_squared_error = numpy.sqrt(mean_squared_error(y_test, y_pred))
