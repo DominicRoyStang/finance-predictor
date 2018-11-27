@@ -8,6 +8,12 @@ start:
 	pipenv run python3 src/model_selection.py
 
 
+## Initializes work environment
+init:
+	pip3 install --user pipenv
+	pipenv install
+
+
 # Inspired by <http://marmelab.com/blog/2016/02/29/auto-documented-makefile.html>
 # sed script explained:
 # /^##/:
