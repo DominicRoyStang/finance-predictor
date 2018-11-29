@@ -17,7 +17,6 @@ from sklearn.linear_model import LinearRegression, Lasso
 from sklearn.gaussian_process import GaussianProcessRegressor
 from sklearn.gaussian_process.kernels import ExpSineSquared, WhiteKernel
 from sklearn.svm import SVR
-from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.model_selection import train_test_split
 
@@ -25,22 +24,6 @@ from tseries import TimeSeriesRegressor, time_series_split
 
 from feature_engineering.csv_handler import csv_to_formatted_dataframe
 from graphing.graphing import plot_data, plot_prediction
-
-
-def test_csv_handler():
-    # Load the personal finance dataset
-    transactions_file = project_root/"datasets/preformatted.csv"
-    data = csv_to_formatted_dataframe(transactions_file)
-
-    # Split into feature and target sets
-    X = data["Date"]
-    y = data["Net Worth"]
-
-    # Split the data into training/testing sets
-    X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=1, shuffle=False)
-
-    # Plot outputs
-    plot_data(X_train, y_train, timeout=3000)
 
 
 def run_linear_regression(data):
@@ -97,7 +80,6 @@ def run_lasso(data):
     and performs a support vector regression.
     Returns the root mean squared error on the test set.
     """
-    # TODO
     # Split into feature and target sets
     X = data["Date"].values
     y = data["Net Worth"]
@@ -116,7 +98,6 @@ def run_lasso(data):
 
     # Create linear regression object
     regression = Lasso(alpha=0.1)
-    #regression = NuSVR(shrinking=False, C=10e2, gamma='scale', nu=0.999)
 
     # Train the model using the training sets
     regression.fit(X_train_numeric, y_train)
@@ -146,7 +127,6 @@ def run_support_vector_regression(data):
     and performs a support vector regression.
     Returns the root mean squared error on the test set.
     """
-    # TODO
     # Split into feature and target sets
     X = data["Date"].values
     y = data["Net Worth"]
@@ -165,7 +145,6 @@ def run_support_vector_regression(data):
 
     # Create linear regression object
     regression = SVR(kernel='rbf', gamma='scale', C=10e2)
-    #regression = NuSVR(shrinking=False, C=10e2, gamma='scale', nu=0.999)
 
     # Train the model using the training sets
     regression.fit(X_train_numeric, y_train)
@@ -197,58 +176,58 @@ def run_lasso_time_series(data):
     """
     # TODO
     # Split into feature and target sets
+    X_dates = data["Date"].values
     X = data["Date"].values.astype('float64', copy=True)
     y = data["Net Worth"]
 
     # Convert 1-D array to 2-D feature array, as expected by sklearn
     X = X.reshape(len(X), 1)
+    X_dates = X_dates.reshape(len(X_dates), 1)
 
     # Plot all data
     # plot_data(X, y, timeout=None)
 
     # Split the data into training/testing sets
     # X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=1, shuffle=False)
+
+    test_set_ratio = 0.3
+    X_train, X_test = time_series_split(X, test_size=test_set_ratio)
+    X_train_dates, X_test_dates = time_series_split(X_dates, test_size=test_set_ratio)
+    y_train, y_test = time_series_split(y, test_size=test_set_ratio)
+    y_all = [*y_train, *y_test]
+
     # X_numeric = [pandas.to_numeric(example) for example in X]
     # X_train_numeric = [pandas.to_numeric(example) for example in X_train]
     # X_test_numeric = [pandas.to_numeric(example) for example in X_test]
 
-    X_train, X_test = time_series_split(X)
-    y_train, y_test = time_series_split(y)
-
-    n_prev = 20
-    empty_values = [numpy.nan for _ in range(0, 20)]
+    # Create time series lasso regressor object
+    n_prev = int(len(y_test)/3) #note to self: use the training set samples, but predict on the test set
+    print(len(y_test))
+    empty_values = [numpy.nan for _ in range(0, n_prev)]
     tsr = TimeSeriesRegressor(Lasso(), n_prev=n_prev)
+
+    # Train the model using the training sets
     tsr.fit(X_train, y_train)
+
+    # Make predictions using the testing set
     pred_train = tsr.predict(X_train)  # Outputs a numpy array of length: len(X_train)-n_prev
     pred_test = tsr.predict(X_test)
     total_pred = [*empty_values, *pred_train, *empty_values, *pred_test]
-
-    plot_prediction(X, y, X_test=X_test, y_pred=total_pred, timeout=None)
-
-    # Create linear regression object
-    #regression = SVR(kernel='rbf', gamma='scale', C=10e2)
-    #regression = NuSVR(shrinking=False, C=10e2, gamma='scale', nu=0.999)
-
-    # Train the model using the training sets
-    #regression.fit(X_train_numeric, y_train)
-
-    # Make predictions using the testing set
-    #y_pred = regression.predict(X_test_numeric)  # predictions on the domain of the training set
-    #y_pred_all = regression.predict(X_numeric)  # predictions on the domain of X
+    y_pred_all = tsr.predict(X)
+    y_pred_all = [*empty_values, *y_pred_all]
 
     # Graph
-    # plot_prediction(X_test, y_test, y_pred=y_pred, timeout=None)  # plot on the domain of the training set
-    #plot_prediction(X, y, X_test=X_test, y_pred=y_pred_all, timeout=None)  # plot on the domain of X
+    plot_prediction(X_dates, y, X_test=X_test_dates, y_pred=total_pred, timeout=None)
 
     # Root mean squared error
-    #root_mean_squared_error = numpy.sqrt(mean_squared_error(y_test, y_pred))
-    #print("Root mean square error: %.2f" % root_mean_squared_error)
+    root_mean_squared_error = numpy.sqrt(mean_squared_error(y_test[n_prev:], pred_test))
+    print("Root mean square error: %.2f" % root_mean_squared_error)
     # Explained variance score: 1 is perfect prediction
-    #variance_score = r2_score(y_test, y_pred)
-    #print("Variance score: %.2f" % variance_score)  # this is actually r squared
-    #print("\n")
+    variance_score = r2_score(y_test[n_prev:], pred_test)
+    print("Variance score: %.2f" % variance_score)  # this is actually r squared
+    print("\n")
 
-    #return variance_score
+    return variance_score
 
 
 def run_gaussian_process_regression(data):
@@ -257,7 +236,6 @@ def run_gaussian_process_regression(data):
     and performs a gaussian process regression.
     Returns the root mean squared error on the test set.
     """
-    # TODO
     # Split into feature and target sets
     X = data["Date"].values
     y = data["Net Worth"]
@@ -296,55 +274,6 @@ def run_gaussian_process_regression(data):
     variance_score = r2_score(y_test, y_pred)
     print("Variance score: %.2f" % variance_score)  # this is actually r squared
     print(regression.score(X_test, y_test))
-    print("\n")
-
-    return variance_score
-
-
-def run_random_forest_regression(data):
-    """
-    Receives a formatted pandas dataframe,
-    and performs a support vector regression.
-    Returns the root mean squared error on the test set.
-    """
-    # TODO
-    # Split into feature and target sets
-    X = data["Date"].values
-    y = data["Net Worth"]
-
-    # Convert 1-D array to 2-D feature array, as expected by sklearn
-    X = X.reshape(len(X), 1)
-
-    # Plot all data
-    # plot_data(X, y, timeout=None)
-
-    # Split the data into training/testing sets
-    X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=1, shuffle=False)
-    X_numeric = [pandas.to_numeric(example) for example in X]
-    X_train_numeric = [pandas.to_numeric(example) for example in X_train]
-    X_test_numeric = [pandas.to_numeric(example) for example in X_test]
-
-    # Create linear regression object
-    regression = RandomForestRegressor(max_depth=2, random_state=0, n_estimators=100)
-    #regression = NuSVR(shrinking=False, C=10e2, gamma='scale', nu=0.999)
-
-    # Train the model using the training sets
-    regression.fit(X_train_numeric, y_train)
-
-    # Make predictions using the testing set
-    y_pred = regression.predict(X_test_numeric)  # predictions on the domain of the training set
-    y_pred_all = regression.predict(X_numeric)  # predictions on the domain of X
-
-    # Graph
-    # plot_prediction(X_test, y_test, y_pred=y_pred, timeout=None)  # plot on the domain of the training set
-    plot_prediction(X, y, X_test=X_test, y_pred=y_pred_all, timeout=None)  # plot on the domain of X
-
-    # Root mean squared error
-    root_mean_squared_error = numpy.sqrt(mean_squared_error(y_test, y_pred))
-    print("Root mean square error: %.2f" % root_mean_squared_error)
-    # Explained variance score: 1 is perfect prediction
-    variance_score = r2_score(y_test, y_pred)
-    print("Variance score: %.2f" % variance_score)  # this is actually r squared
     print("\n")
 
     return variance_score
@@ -411,7 +340,7 @@ def main(args):
 
     # Output results
     print("Average score (r_sqr) on linear regression:", numpy.average(results["lr"]))
-    print("Average score (r_sqr) on support vector regression:", numpy.average(results["svr"]))
+    print("Average score (r_sqr) on time series lasso regression:", numpy.average(results["svr"]))
     print("Average score (r_sqr) on gaussian process regression:", numpy.average(results["gpr"]))
 
 
