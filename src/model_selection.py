@@ -171,7 +171,7 @@ def run_support_vector_regression(data):
     return variance_score
 
 
-def run_lasso_time_series(data):
+def run_time_series(data):
     """
     Receives a formatted pandas dataframe,
     and performs a support vector regression.
@@ -207,7 +207,7 @@ def run_lasso_time_series(data):
     n_prev = int(len(y_test)/2)
     # print(len(y_test))
     empty_values = [numpy.nan for _ in range(0, n_prev)]
-    tsr = TimeSeriesRegressor(n_prev=n_prev) # uses linear regressions
+    tsr = TimeSeriesRegressor(n_prev=n_prev)  # uses linear regressions
     # tsr = TimeSeriesRegressor(Lasso(tol=0.15), n_prev=n_prev)
 
     # Train the model using the training sets
@@ -221,7 +221,7 @@ def run_lasso_time_series(data):
     y_pred_all = [*empty_values, *y_pred_all]
 
     # Graph
-    plot_prediction(X_dates, y, X_test=X_test_dates, y_pred=total_pred, timeout=None)
+    # plot_prediction(X_dates, y, X_test=X_test_dates, y_pred=total_pred, timeout=None)
 
     # Root mean squared error
     root_mean_squared_error = numpy.sqrt(mean_squared_error(y_test[n_prev:], pred_test))
@@ -290,7 +290,7 @@ def process_files(file_list):
     """
     score_lists = {
         'lr': [],
-        'svr': [],
+        'ts': [],
         'gpr': []
     }
     # NOTE: This could be much faster with parallel processing on large file lists
@@ -303,11 +303,11 @@ def process_files(file_list):
             continue
         # Run regressions on the dataframe
         lr_score = run_linear_regression(dataframe)
-        svr_score = run_lasso_time_series(dataframe)
+        ts_score = run_time_series(dataframe)
         gpr_score = run_gaussian_process_regression(dataframe)
         # Append regression results to the list
         score_lists['lr'].append(lr_score)
-        score_lists['svr'].append(svr_score)
+        score_lists['ts'].append(ts_score)
         score_lists['gpr'].append(gpr_score)
 
     return score_lists
@@ -344,7 +344,7 @@ def main(args):
 
     # Output results
     print("Average score (r_sqr) on linear regression:", numpy.average(results["lr"]))
-    print("Average score (r_sqr) on time series lasso regression:", numpy.average(results["svr"]))
+    print("Average score (r_sqr) on time series lasso regression:", numpy.average(results["ts"]))
     print("Average score (r_sqr) on gaussian process regression:", numpy.average(results["gpr"]))
 
 
