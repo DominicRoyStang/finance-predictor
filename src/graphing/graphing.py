@@ -78,6 +78,37 @@ def plot_prediction(x, y, X_test=None, y_pred=None, timeout=None):
     plt.show()
 
 
+def plot_predictions(x, y, pred_dates=None, lines=None):
+    """Draws the data as a scatter plot, and the predictions as lines"""
+
+    # Resize the graph window
+    fig = plt.figure(figsize=(10, 7))
+
+    # Get the axes
+    ax = plt.axes()
+
+    # Show the grid
+    # ax.grid()
+
+    # Select marker size
+    marker_sizes = [4 for _ in x]
+
+    # Plot outputs
+    if not(lines is None or pred_dates is None):
+        plt.axvline(x=x[-1], linestyle='dashed', color='darkgray')
+        for line, color in zip(lines, ['goldenrod', 'red']):
+            plt.plot(pred_dates, line, color=color, linewidth=3, alpha=0.8)
+    plt.scatter(x, y, s=marker_sizes, color='darkgray', zorder=100)
+
+    # Format x-axis label angles
+    fig.autofmt_xdate()
+
+    # Raise the bottom of the figure to make space for the angled labels
+    plt.subplots_adjust(bottom=0.23)
+
+    plt.show()
+
+
 def close_event():
     """Timer calls this lambda function to close the plot window"""
     plt.close()  # Closes the window

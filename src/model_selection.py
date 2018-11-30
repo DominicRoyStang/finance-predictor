@@ -26,13 +26,16 @@ from feature_engineering.csv_handler import csv_to_formatted_dataframe
 from graphing.graphing import plot_data, plot_prediction
 
 
+kernel = ExpSineSquared(1.0, 5.0, periodicity_bounds=(1e-2, 10e1)) + WhiteKernel(1e-1)
+
+
 def run_linear_regression(data):
     """
     Receives a formatted pandas dataframe, 
     and performs a linear regression.
     Returns the root mean squared error on the test set.
     """
-
+    print("Linear Regression")
     # Split into feature and target sets
     X = data["Date"].values
     y = data["Net Worth"]
@@ -68,7 +71,7 @@ def run_linear_regression(data):
     print("Root mean square error: %.2f" % root_mean_squared_error)
     # Explained variance score: 1 is perfect prediction
     variance_score = r2_score(y_test, y_pred)
-    print("Variance score: %.2f" % variance_score)  # this is actually r squared
+    print("R² score: %.2f" % variance_score)  # this is actually r squared
     print("\n")
 
     return variance_score
@@ -115,7 +118,7 @@ def run_lasso(data):
     print("Root mean square error: %.2f" % root_mean_squared_error)
     # Explained variance score: 1 is perfect prediction
     variance_score = r2_score(y_test, y_pred)
-    print("Variance score: %.2f" % variance_score)  # this is actually r squared
+    print("R² score: %.2f" % variance_score)  # this is actually r squared
     print("\n")
 
     return variance_score
@@ -162,7 +165,7 @@ def run_support_vector_regression(data):
     print("Root mean square error: %.2f" % root_mean_squared_error)
     # Explained variance score: 1 is perfect prediction
     variance_score = r2_score(y_test, y_pred)
-    print("Variance score: %.2f" % variance_score)  # this is actually r squared
+    print("R² score: %.2f" % variance_score)  # this is actually r squared
     print("\n")
 
     return variance_score
@@ -174,7 +177,7 @@ def run_lasso_time_series(data):
     and performs a support vector regression.
     Returns the root mean squared error on the test set.
     """
-    # TODO
+    print("Lasso Time Series")
     # Split into feature and target sets
     X_dates = data["Date"].values
     X = data["Date"].values.astype('float64', copy=True)
@@ -190,7 +193,7 @@ def run_lasso_time_series(data):
     # Split the data into training/testing sets
     # X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=1, shuffle=False)
 
-    test_set_ratio = 0.3
+    test_set_ratio = 0.25
     X_train, X_test = time_series_split(X, test_size=test_set_ratio)
     X_train_dates, X_test_dates = time_series_split(X_dates, test_size=test_set_ratio)
     y_train, y_test = time_series_split(y, test_size=test_set_ratio)
@@ -201,10 +204,11 @@ def run_lasso_time_series(data):
     # X_test_numeric = [pandas.to_numeric(example) for example in X_test]
 
     # Create time series lasso regressor object
-    n_prev = int(len(y_test)/3) #note to self: use the training set samples, but predict on the test set
-    print(len(y_test))
+    n_prev = int(len(y_test)/2)
+    # print(len(y_test))
     empty_values = [numpy.nan for _ in range(0, n_prev)]
-    tsr = TimeSeriesRegressor(Lasso(), n_prev=n_prev)
+    tsr = TimeSeriesRegressor(n_prev=n_prev) # uses linear regressions
+    # tsr = TimeSeriesRegressor(Lasso(tol=0.15), n_prev=n_prev)
 
     # Train the model using the training sets
     tsr.fit(X_train, y_train)
@@ -224,7 +228,7 @@ def run_lasso_time_series(data):
     print("Root mean square error: %.2f" % root_mean_squared_error)
     # Explained variance score: 1 is perfect prediction
     variance_score = r2_score(y_test[n_prev:], pred_test)
-    print("Variance score: %.2f" % variance_score)  # this is actually r squared
+    print("R² score: %.2f" % variance_score)  # this is actually r squared
     print("\n")
 
     return variance_score
@@ -236,6 +240,7 @@ def run_gaussian_process_regression(data):
     and performs a gaussian process regression.
     Returns the root mean squared error on the test set.
     """
+    print("Gaussian Process Regression")
     # Split into feature and target sets
     X = data["Date"].values
     y = data["Net Worth"]
@@ -253,7 +258,6 @@ def run_gaussian_process_regression(data):
     X_test_numeric = [pandas.to_numeric(example) for example in X_test]
 
     # Create linear regression object
-    kernel = ExpSineSquared(1.0, 5.0, periodicity_bounds=(1e-2, 10e1)) + WhiteKernel(1e-1)
     regression = GaussianProcessRegressor(kernel=kernel, alpha=35)
 
     # Train the model using the training sets
@@ -265,15 +269,15 @@ def run_gaussian_process_regression(data):
 
     # Graph
     # plot_prediction(X_test, y_test, X_test=X_test, y_pred=y_pred, timeout=None)  # plot on the domain of the training set
-    plot_prediction(X, y, X_test=X_test, y_pred=y_pred_all, timeout=None)  # plot on the domain of X
+    # plot_prediction(X, y, X_test=X_test, y_pred=y_pred_all, timeout=None)  # plot on the domain of X
 
     # Root mean squared error
     root_mean_squared_error = numpy.sqrt(mean_squared_error(y_test, y_pred))
     print("Root mean square error: %.2f" % root_mean_squared_error)
     # Explained variance score: 1 is perfect prediction
     variance_score = r2_score(y_test, y_pred)
-    print("Variance score: %.2f" % variance_score)  # this is actually r squared
-    print(regression.score(X_test, y_test))
+    print("R² score: %.2f" % variance_score)  # this is actually r squared
+    # print(regression.score(X_test, y_test))
     print("\n")
 
     return variance_score
