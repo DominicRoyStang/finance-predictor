@@ -16,6 +16,7 @@ from the root of the project, run `pipenv install`.
     Or `pipenv shell` followed by `python predict_finances.py ../datasets/transactions.csv`
     _You can exit pipenv shell with `CTRL+D`_
 
+Note: _I have provided some sample files under the datasets folder._
 
 # Why was linear regression chosen?
 After comparing it with support vector regression and gaussian process regression, linear regression was found to have the best r-squared score.
@@ -32,6 +33,7 @@ If you wish to **validate my results**, follow these steps:
 
 ## Training set for the regressions
 The `trans.asc` file used was obtained from [here](https://github.com/awesomedata/awesome-public-datasets/issues/234)
+
 Data descriptions can be accessed [here](https://web.archive.org/web/20161019192412/http://lisp.vse.cz/pkdd99/berka.htm)
 
 
