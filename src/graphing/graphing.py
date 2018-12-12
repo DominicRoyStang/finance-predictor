@@ -96,7 +96,7 @@ def plot_predictions(x, y, pred_dates=None, lines=None):
     # Plot outputs
     if not(lines is None or pred_dates is None):
         plt.axvline(x=x[-1], linestyle='dashed', color='darkgray')
-        for line, color in zip(lines, ['goldenrod', 'red']):
+        for line, color in zip(lines, ['goldenrod', 'green', 'red']):
             plt.plot(pred_dates, line, color=color, linewidth=3, alpha=0.8)
     plt.scatter(x, y, s=marker_sizes, color='darkgray', zorder=100)
 

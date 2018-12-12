@@ -137,7 +137,7 @@ def process_file(file):
     ts_y, ts_y_all = run_time_series(X, y, datelist)
     gpr_y, gpr_y_all = run_gaussian_process_regression(X, y, X_and_datelist)
 
-    plot_predictions(X, y, pred_dates=X_and_datelist, lines=[lr_y_all, gpr_y_all])
+    plot_predictions(X, y, pred_dates=X_and_datelist, lines=[lr_y_all, ts_y_all, gpr_y_all])
 
 
 def main(args):
