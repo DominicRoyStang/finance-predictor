@@ -1,2 +1,4 @@
 ### This file ensures that GitHub labels this repository with the correct language ###
 datasets/*
+docs/*
+.vscode/*
