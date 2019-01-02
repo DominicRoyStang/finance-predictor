@@ -1,4 +1,4 @@
 ### This file ensures that GitHub labels this repository with the correct language ###
-datasets/* linguist-data
+datasets/* data
 docs/* linguist-documentation
 .vscode/* linguist-generated
